@@ -13,7 +13,13 @@ st.write(
     Article: https://academic.oup.com/ofid/article/5/7/ofy137/5039595
 
     If the analysis pipeline cannot recover this established historical pattern, it suggests a problem with the data processing or analysis.
+    """
+)
 
+
+
+st.write(
+    """
     ### Placebo Check
 
     Correlate **vaccination coverage** with a **non-vaccine-preventable health outcome**.
