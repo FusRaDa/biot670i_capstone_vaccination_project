@@ -2,3 +2,4 @@
 .env
 raw/*
 !README.md
+.devcontainer

@@ -42,3 +42,8 @@
 ### Files & Directories
 - toy/ - holds prrof of concept in terms of using the tech stack.
     - run ```streamlit run toy/app.py``` to see proof of concept
+
+
+### How to deploy in Streamlit
+- visit and login to: https://streamlit.io/cloud
+- Add app > find repo > set branch to main > app file path: ```app/app.py```
