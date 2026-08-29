@@ -34,6 +34,10 @@
 4. Run toy data into streamlit
     - ```streamlit run toy/app.py```
 
+5. Create your own branch from main
+    - ```git switch -c YOUR_LAST_NAME```
+    - check current branch ```git branch```
+
 
 ### Files & Directories
 - toy/ - holds prrof of concept in terms of using the tech stack.
