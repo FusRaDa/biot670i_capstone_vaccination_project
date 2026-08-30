@@ -3,6 +3,7 @@
 ### Priority datasets to download
 - Project Tycho Level 1, v1.0.0 - https://datahub.hhs.gov/dataset/Project-Tycho-Level-1-Data/g89t-x93h/about_data
 - CDC SchoolVaxView - https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kinderga/ijqb-a7ye/data_preview
+- CDC NIS - https://www.cdc.gov/nis/php/datasets-child/index.html?utm_source=chatgpt.com
 
 
 ### Priority API to utilize

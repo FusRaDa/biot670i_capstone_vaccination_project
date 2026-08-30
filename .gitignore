@@ -1,5 +1,14 @@
+# environmental variables
 .venv/
 .env
-raw/*
 !README.md
 .devcontainer
+
+
+# Raw data to keep <100MB
+raw/*
+!raw/tycho/
+raw/tycho/*
+!raw/tycho/ProjectTycho_Level1_v1.0.0.csv
+
+
