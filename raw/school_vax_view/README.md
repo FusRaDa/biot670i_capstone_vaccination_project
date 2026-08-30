@@ -4,3 +4,5 @@ https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kind
 ```
 bash raw/school_vax_view/download.bash
 ```
+
+*** Note that limit is set to 50K rows, this may change overtime. ***
