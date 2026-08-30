@@ -1,5 +1,23 @@
+# environmental variables
 .venv/
 .env
-raw/*
 !README.md
 .devcontainer
+
+
+# Raw data to keep <100MB
+# Ignore everything directly under raw
+raw/*
+
+# Allow Git to enter dataset folders
+!raw/*/
+
+# Ignore files inside dataset folders
+raw/*/*
+
+# Keep README and download scripts
+!raw/*/README.md
+!raw/*/download.bash
+
+# Completely ignore NIS year folders
+raw/nis/20*/

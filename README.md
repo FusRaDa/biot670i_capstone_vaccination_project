@@ -47,3 +47,7 @@
 ### How to deploy in Streamlit
 - visit and login to: https://streamlit.io/cloud
 - Add app > find repo > set branch to main > app file path: ```app/app.py```
+
+
+### Live app
+- https://biot670i-group1.streamlit.app/
