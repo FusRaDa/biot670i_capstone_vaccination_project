@@ -4,7 +4,6 @@
 !README.md
 .devcontainer
 
-
 # Raw data to keep <100MB
 # Ignore everything directly under raw
 raw/*
@@ -21,3 +20,6 @@ raw/*/*
 
 # Completely ignore NIS year folders
 raw/nis/20*/
+
+# Specific files
+rada_notebooks/nis_vacc_coverage.csv
