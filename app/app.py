@@ -11,10 +11,16 @@ pages = {
     ],
     "Analysis": [
         st.Page(
+            "pages/control.py",
+            title="Control",
+            icon="⚙️",
+            url_path="control.py"
+        ),
+        st.Page(
             "pages/mmp_coverage_cases.py",
             title="MMR Coverage and Cases",
             icon="💉",
-            url_path="mmp_coverage_cases"
+            url_path="mmp_coverage_cases.py"
         ),
     ],
     "Notebooks": [
