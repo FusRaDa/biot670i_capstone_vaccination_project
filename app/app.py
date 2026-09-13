@@ -18,9 +18,15 @@ pages = {
         ),
         st.Page(
             "pages/mmp_coverage_cases.py",
-            title="MMR Coverage and Cases",
+            title="MMP Coverage and Cases",
             icon="💉",
             url_path="mmp_coverage_cases.py"
+        ),
+        st.Page(
+            "pages/mmp_coverage_cases_by_state.py",
+            title="MMP Coverage and Cases Per State",
+            icon="🇺🇸",
+            url_path="mmp_coverage_cases_by_state.py"
         ),
     ],
     "Notebooks": [
