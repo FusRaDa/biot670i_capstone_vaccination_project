@@ -1,5 +1,6 @@
 # environmental variables
 .venv/
+misc/
 .env
 !README.md
 .devcontainer
