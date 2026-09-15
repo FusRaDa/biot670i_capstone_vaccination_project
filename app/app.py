@@ -17,6 +17,12 @@ pages = {
             url_path="control.py"
         ),
         st.Page(
+            "pages/placebo.py",
+            title="Placebo",
+            icon="✅",
+            url_path="placebo.py"
+        ),
+        st.Page(
             "pages/mmp_coverage_cases.py",
             title="MMP Coverage and Cases",
             icon="💉",
