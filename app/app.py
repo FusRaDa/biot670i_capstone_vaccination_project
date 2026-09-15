@@ -41,6 +41,12 @@ pages = {
             title="mmp_cases_coverage_notebook.py",
             icon="📄",
             url_path="mmp_cases_coverage_notebook.py"
+        ),
+        st.Page(
+            "pages/notebooks/calculate_nis_coverage.py",
+            title="calculate_nis_coverage.py",
+            icon="📄",
+            url_path="calculate_nis_coverage.py"
         )
     ]
 }
