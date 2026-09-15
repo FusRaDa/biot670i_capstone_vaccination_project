@@ -17,6 +17,12 @@ pages = {
             url_path="control.py"
         ),
         st.Page(
+            "pages/placebo.py",
+            title="Placebo",
+            icon="✅",
+            url_path="placebo.py"
+        ),
+        st.Page(
             "pages/mmp_coverage_cases.py",
             title="MMP Coverage and Cases",
             icon="💉",
@@ -41,6 +47,12 @@ pages = {
             title="mmp_cases_coverage_notebook.py",
             icon="📄",
             url_path="mmp_cases_coverage_notebook.py"
+        ),
+        st.Page(
+            "pages/notebooks/calculate_nis_coverage.py",
+            title="calculate_nis_coverage.py",
+            icon="📄",
+            url_path="calculate_nis_coverage.py"
         )
     ]
 }
