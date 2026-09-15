@@ -10,6 +10,10 @@
 - Project Outline
     - https://docs.google.com/document/d/16FiXpB9fuYY9Yqj8b4IVwNM_ZnQetMudPUvE6nPitbA/edit?usp=sharing
 
+- In Project Status:
+    - Explain method used to calculate vaccine coverage from NIS Child
+    - Explain method used to calculate vaccine-cases lag event
+
 
 ### Tech Stack
 - pandas
