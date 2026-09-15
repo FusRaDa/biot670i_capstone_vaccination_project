@@ -13,6 +13,7 @@
 - In Project Status:
     - Explain method used to calculate vaccine coverage from NIS Child
     - Explain method used to calculate vaccine-cases lag event
+    - Consider cases per 100K for each state rather than raw counts
 
 
 ### Tech Stack

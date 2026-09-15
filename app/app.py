@@ -34,6 +34,18 @@ pages = {
             icon="🇺🇸",
             url_path="mmp_coverage_cases_by_state.py"
         ),
+        st.Page(
+            "pages/time_lagged_associations.py",
+            title="Time Lagged Associations",
+            icon="⏱️",
+            url_path="time_lagged_associations.py"
+        ),
+        st.Page(
+            "pages/time_lagged_associations_by_state.py",
+            title="Time Lagged Associations Per State",
+            icon="⏳",
+            url_path="time_lagged_associations_by_state.py"
+        ),
     ],
     "Notebooks": [
         st.Page(
@@ -53,7 +65,13 @@ pages = {
             title="calculate_nis_coverage.py",
             icon="📄",
             url_path="calculate_nis_coverage.py"
-        )
+        ),
+        st.Page(
+            "pages/notebooks/analysis_engine_time_association.py",
+            title="analysis_engine_time_association.py",
+            icon="📄",
+            url_path="analysis_engine_time_association.py"
+        ),
     ]
 }
 
