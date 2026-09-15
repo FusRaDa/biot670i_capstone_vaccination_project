@@ -9,7 +9,7 @@ st.markdown("Measles, Mumps, Pertussis Cases & Coverage: 1995 - 2017")
 st.sidebar.header("Measles, Mumps, Pertussis Cases & Coverage")
 st.write(
     """
-    ### Summary
+    ### Vaccine Coverage & Cases - Pooled Analysis
 
     Vaccination coverage remained relatively stable from 1995–2017, while 
     reported disease cases varied considerably over time.
