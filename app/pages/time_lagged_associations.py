@@ -46,6 +46,10 @@ cases_df = pd.read_csv(
     "app/data/tycho_cases.csv"
 )
 
+missing_cases_df = pd.read_csv(
+    "app/data/missing_cases.csv"
+)
+
 population_df = pd.read_csv(
     "app/data/population.csv"
 )
@@ -53,6 +57,54 @@ population_df = pd.read_csv(
 coverage_df = pd.read_csv(
     "app/data/nis_vacc_coverage.csv"
 )
+
+
+# -------------------------
+# Combine Tycho + MMWR cases
+# -------------------------
+
+cases_df = pd.merge(
+    cases_df,
+    missing_cases_df,
+    on=["year", "state"],
+    how="outer",
+    suffixes=("_tycho", "_mmwr")
+)
+
+
+# Prefer Tycho values when available.
+# Use MMWR to fill missing Tycho values.
+cases_df["measles_cases"] = (
+    cases_df["measles_cases_tycho"]
+    .combine_first(
+        cases_df["measles_cases_mmwr"]
+    )
+)
+
+cases_df["mumps_cases"] = (
+    cases_df["mumps_cases_tycho"]
+    .combine_first(
+        cases_df["mumps_cases_mmwr"]
+    )
+)
+
+
+# Keep final case columns
+cases_df = cases_df[
+    [
+        "year",
+        "state",
+        "measles_cases",
+        "mumps_cases",
+        "pertussis_cases"
+    ]
+]
+
+
+# Sort
+cases_df = cases_df.sort_values(
+    ["state", "year"]
+).reset_index(drop=True)
 
 
 # -------------------------
