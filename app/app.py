@@ -72,6 +72,12 @@ pages = {
             icon="📄",
             url_path="analysis_engine_time_association.py"
         ),
+         st.Page(
+            "pages/notebooks/missing_years_cases.py",
+            title="missing_years_cases.py",
+            icon="📄",
+            url_path="missing_years_cases.py"
+        ),
     ]
 }
 

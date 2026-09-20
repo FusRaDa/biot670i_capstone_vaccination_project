@@ -15,20 +15,16 @@ st.write(
     """
     ### Vaccine Coverage & Disease Incidence - Pooled Analysis
 
-    Vaccination coverage remained relatively stable from 1995–2017, while
-    reported disease incidence varied considerably over time.
+    Case Coverage Details
+    - **Measles:** Project Tycho is used as the primary source for state-level measles case counts. Missing case data for **2003–2015** were supplemented using annual CDC MMWR/NNDSS surveillance reports.
+    - **Mumps:** Project Tycho is used as the primary source for state-level mumps case counts. Missing case data for **2003–2010** were supplemented using annual CDC MMWR/NNDSS surveillance reports.
+    - **Pertussis:** All state-level pertussis case counts are from **Project Tycho**. No additional MMWR/NNDSS case data were added for pertussis.
+    
+    When both Project Tycho and the supplemental MMWR/NNDSS dataset contain a value for the same state and year, the **Project Tycho value is retained**. MMWR/NNDSS values are used only to fill missing observations.
 
     Disease incidence is reported as **cases per 100,000 population**, allowing
     disease occurrence to be compared across years while accounting for changes
     in population size.
-
-    - **Measles:** Incidence generally declined after the mid-1990s. Case data are
-      unavailable from 2003–2015, so the gap should not be interpreted as zero
-      incidence. The 2016–2017 values come from CDC NNDSS.
-    - **Mumps:** Incidence remained relatively low through the early 2000s but rose
-      sharply in 2016 and 2017 despite consistently high MMR coverage.
-    - **Pertussis:** Incidence followed a cyclical pattern, including a substantial
-      peak around 2012, while vaccination coverage changed comparatively little.
 
     Overall, the figure does not demonstrate a simple year-to-year relationship
     between national vaccination coverage and disease incidence. National estimates
