@@ -667,6 +667,162 @@ if state == "California":
             hide_index=True
         )
 
+    # --------------------------------------------------------
+    # DATA QUALITY AND COMPLETENESS
+    # --------------------------------------------------------
+
+    st.divider()
+    st.subheader("Data Quality & Completeness")
+
+    st.markdown(
+        "Evaluate data availability and the number of valid "
+        "observations supporting the California analysis."
+    )
+
+    # Calculate observed and missing years
+    observed_years = sorted(
+        analysis_df["year"].astype(int).unique()
+    )
+
+    all_years = set(
+        range(min(observed_years), max(observed_years) + 1)
+    )
+
+    missing_years = sorted(
+        all_years - set(observed_years)
+    )
+
+    completeness = (
+        len(observed_years) / len(all_years) * 100
+    )
+
+    # Summary metrics
+    quality_col1, quality_col2, quality_col3 = st.columns(3)
+
+    with quality_col1:
+        st.metric("Observed Years", len(observed_years))
+
+    with quality_col2:
+        st.metric("Missing Years", len(missing_years))
+
+    with quality_col3:
+        st.metric(
+            "Year Coverage",
+            f"{completeness:.1f}%"
+        )
+
+    # Show unavailable years
+    with st.expander("View Missing Years"):
+        st.write(", ".join(map(str, missing_years)))
+
+    # Recalculate valid year pairs for each lag
+    available = set(observed_years)
+    lag_counts = []
+
+    for lag in sorted(lag_df["lag_years"].astype(int)):
+        valid_pairs = [
+            year for year in observed_years
+            if year + lag in available
+        ]
+
+        lag_counts.append({
+            "Lag (Years)": lag,
+            "Valid Pairs": len(valid_pairs),
+            "Year Pairs": ", ".join(
+                f"{year}–{year + lag}"
+                for year in valid_pairs
+            )
+        })
+
+    quality_df = pd.DataFrame(lag_counts)
+
+    # Visualization
+    st.markdown("#### Available Observations by Lag")
+
+    quality_fig = go.Figure()
+
+    quality_fig.add_trace(
+        go.Bar(
+            x=quality_df["Lag (Years)"],
+            y=quality_df["Valid Pairs"],
+            marker_color="#70BDF2",
+            hovertemplate=(
+                "Lag: %{x} years<br>"
+                "Valid pairs: %{y}"
+                "<extra></extra>"
+            )
+        )
+    )
+
+    quality_fig.update_layout(
+        template="plotly_dark",
+        showlegend=False,
+        title_text="",
+        height=380,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        xaxis=dict(
+            title="Lag Period (Years)",
+            dtick=1
+        ),
+        yaxis=dict(
+            title="Valid Observation Pairs",
+            rangemode="tozero"
+        ),
+        margin=dict(l=50, r=25, t=20, b=60)
+    )
+
+    st.plotly_chart(
+        quality_fig,
+        use_container_width=True,
+        key="california_data_quality"
+    )
+
+    # Compare calculated counts with the existing CSV
+    expected_counts = lag_df[
+        ["lag_years", "n"]
+    ].rename(
+        columns={
+            "lag_years": "Lag (Years)",
+            "n": "Reported Pairs"
+        }
+    )
+
+    checked = quality_df.merge(
+        expected_counts,
+        on="Lag (Years)",
+        how="left"
+    )
+
+    if (
+        checked["Valid Pairs"] ==
+        checked["Reported Pairs"]
+    ).all():
+        st.success(
+            "All reported lag sample sizes match "
+            "calendar-year observation counts."
+        )
+    else:
+        st.warning(
+            "Some reported sample sizes differ from "
+            "the available calendar-year pairs. "
+            "Further validation is required."
+        )
+
+    with st.expander("View Year Pairs Used by Each Lag"):
+        st.dataframe(
+            checked,
+            use_container_width=True,
+            hide_index=True
+        )
+
+    st.info(
+        "Data completeness affects the reliability of "
+        "lagged correlations. Longer lags contain fewer "
+        "observations, making statistical estimates "
+        "less stable."
+    )
+
 
 # ============================================================
 # 12. FLORIDA CASE STUDY
