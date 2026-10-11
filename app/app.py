@@ -46,6 +46,13 @@ pages = {
             icon="⏳",
             url_path="time_lagged_associations_by_state.py"
         ),
+        
+        st.Page(
+            "pages/state_case_studies.py",
+            title="State Case Studies",
+            icon=":material/analytics:",
+            url_path="state-case-studies"
+        ),
     ],
     "Notebooks": [
         st.Page(
