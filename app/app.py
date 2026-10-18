@@ -35,12 +35,6 @@ pages = {
             url_path="mmp_coverage_cases_by_state.py"
         ),
         st.Page(
-            "pages/time_lagged_associations.py",
-            title="Time Lagged Associations",
-            icon="⏱️",
-            url_path="time_lagged_associations.py"
-        ),
-        st.Page(
             "pages/time_lagged_associations_by_state.py",
             title="Time Lagged Associations Per State",
             icon="⏳",
