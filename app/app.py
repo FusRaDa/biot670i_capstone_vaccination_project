@@ -53,6 +53,14 @@ pages = {
             icon=":material/menu_book:",
             url_path="references"
         ),
+
+        st.Page(
+            "pages/mmp_master_explorer.py",
+            title="MMP Master Explorer",
+            icon=":material/analytics:",
+            url_path="mmp-master-explorer"
+        ),
+
     ],
     "Notebooks": [
         st.Page(
