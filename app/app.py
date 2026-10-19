@@ -47,6 +47,12 @@ pages = {
             icon=":material/analytics:",
             url_path="state-case-studies"
         ),
+        st.Page(
+            "pages/references.py",
+            title="References",
+            icon=":material/menu_book:",
+            url_path="references"
+        ),
 
         st.Page(
             "pages/mmp_master_explorer.py",
