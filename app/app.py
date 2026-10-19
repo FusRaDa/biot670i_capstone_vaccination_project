@@ -35,12 +35,6 @@ pages = {
             url_path="mmp_coverage_cases_by_state.py"
         ),
         st.Page(
-            "pages/time_lagged_associations.py",
-            title="Time Lagged Associations",
-            icon="⏱️",
-            url_path="time_lagged_associations.py"
-        ),
-        st.Page(
             "pages/time_lagged_associations_by_state.py",
             title="Time Lagged Associations Per State",
             icon="⏳",
@@ -87,11 +81,17 @@ pages = {
             icon="📄",
             url_path="analysis_engine_time_association.py"
         ),
-         st.Page(
+        st.Page(
             "pages/notebooks/missing_years_cases.py",
             title="missing_years_cases.py",
             icon="📄",
             url_path="missing_years_cases.py"
+        ),
+        st.Page(
+            "pages/notebooks/lag_phase_analysis.py",
+            title="lag_phase_analysis.py",
+            icon="📄",
+            url_path="lag_phase_analysis.py"
         ),
     ]
 }
