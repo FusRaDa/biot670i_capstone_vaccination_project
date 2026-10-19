@@ -4,10 +4,11 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from scipy.stats import pearsonr
 import streamlit as st
+from pathlib import Path
 
 st.set_page_config(page_title="Time-Lagged Association by State", page_icon="⏳", layout="wide")
 
-MASTER_CSV_PATH = "../app/data/cases_coverage_ms.csv"
+MASTER_CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "cases_coverage_ms.csv"
 DISEASES = ("measles", "mumps", "pertussis")
 
 
