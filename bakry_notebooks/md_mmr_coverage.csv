@@ -1,0 +1,18 @@
+Vaccine/Exemption,Dose,Geography Type,Geography,School Year,Estimate (%),Population Size,Percent Surveyed,Number of Exemptions,Survey Type
+MMR,,States,Maryland,2009-10,98.9,75061,75,,Voluntary response
+MMR,,States,Maryland,2010-11,NA,,,,NA
+MMR,,States,Maryland,2011-12,98.7,72957,67.2,,Voluntary Response
+MMR,,States,Maryland,2012-13,98.2,75007,84.3,,Voluntary Response
+MMR,,States,Maryland,2013-14,97.6,75659,96.9,,Census
+MMR,,States,Maryland,2014-15,99.1,75391,90.2,,Census (public); Voluntary response (private)
+MMR,,States,Maryland,2015-16,99.4,72012,94.3,,Census (public); Voluntary response (private)
+MMR,,States,Maryland,2016-17,97.9,71467,98.1,,Census
+MMR,,States,Maryland,2017-18,97.4,68528,98.5,,Census
+MMR,,States,Maryland,2018-19,97.4,71431,100,,Census
+MMR,,States,Maryland,2019-20,97.9,72443,98.3,,Census (public). voluntary response (private)
+MMR,,States,Maryland,2020-21,87.6,65764,75.6,,Voluntary response
+MMR,,States,Maryland,2021-22,93.9,53866,98.4,,Census
+MMR,,States,Maryland,2022-23,96.7,59684,100,,Census
+MMR,,States,Maryland,2023-24,96.6,63224,100,,Census
+MMR,,States,Maryland,2024-25,96.4,66135,95.6,,"Census (pub.), vol. response (prv.)"
+MMR,,States,Maryland,2025-26,96.6,66945,97.8,,"Census (pub.), vol. response (prv.)"
