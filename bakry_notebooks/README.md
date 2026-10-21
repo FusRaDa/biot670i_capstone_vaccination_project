@@ -16,7 +16,7 @@ GitHub. (n.d.a). Creating a pull request. https://docs.github.com/en/pull-reques
 
 GitHub. (n.d.b). Working with non-code files.https://docs.github.com/en/repositories/working-with-files/using-files/working-with-non-code-files 
 
-SchoolVaxView. (August, 17, 2026). Vaccination Coverage and Exemptions among Kindergartners. U.S. Centers for Disease Control and Prevention. https://www.cdc.gov/schoolvaxview/data/index.html
+SchoolVaxView. (August 17, 2026). Vaccination Coverage and Exemptions among Kindergartners. U.S. Centers for Disease Control and Prevention. https://www.cdc.gov/schoolvaxview/data/index.html
 
-Van Panhuis, W., Cross, A., & Bruke, D. . (April 1, 2018). Project Tycho. MIDAS Coordination Center. 10.25337/T7/ptycho.v2.0/US.27836007 
+Van Panhuis, W., Cross, A., & Bruke, D..(April 1, 2018). Project Tycho. MIDAS Coordination Center. 10.25337/T7/ptycho.v2.0/US.27836007 
 
