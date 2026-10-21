@@ -7,7 +7,9 @@ The work in this folder includes:
   - Maryland Measles Cases from Project Tycho (md_measles_project_tycho.csv)
   - Merged Data for data included in streamlit: https://umuc365my.sharepoint.com/:x:/g/personal/hbakry_student_umgc_edu/IQDU8nfXoHQIS6vXmUp1qdFnAQoLj04IaGuo6et1lkW3tYo?e=D0nEhG
 
+
 References
+
 Center for Immunization. (October 15, 2026). Measles. Maryland Department of Health. https://health.maryland.gov/phpa/OIDEOR/IMMUN/pages/measles.aspx
 
 GitHub. (n.d.a). Creating a pull request. https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request?search-overlay-input=git+pull&search-overlay-ask-ai=true
