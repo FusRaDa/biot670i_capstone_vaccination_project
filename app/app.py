@@ -53,12 +53,23 @@ pages = {
             icon=":material/menu_book:",
             url_path="references"
         ),
-
         st.Page(
             "pages/mmp_master_explorer.py",
             title="MMP Master Explorer",
             icon=":material/analytics:",
             url_path="mmp-master-explorer"
+        ),
+        st.Page(
+            "pages/pertussis_sanity_check.py",
+            title="Matthew Rada - Pertussis Sanity Check",
+            icon=":material/person_search:",
+            url_path="pertussis_sanity_check"
+        ),
+        st.Page(
+            "pages/ca_fl_measles_lag_analysis.py",
+            title="Kalkidan Perin - FL & CA Lag Phase Analysis",
+            icon=":material/person_search:",
+            url_path="ca_fl_measles_lag_analysis"
         ),
 
     ],
