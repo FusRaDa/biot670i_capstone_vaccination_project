@@ -1,7 +1,7 @@
 # folder for work done by Heba Bakry
 
 The work in this folder includes:
-  - Kindergarten Vaccination Coverage from SchoolVaxView (Vaccination_Coverage_and_Exemptions_among_Kindergartners.csv) and a separate csv file for MMR and DTP/DTaP/DT vaccination coverage (Vaccination_Coverage_and_Exemptions_among_Kindergartners_MMR_P.csv)
+  - Kindergarten Vaccination Coverage from SchoolVaxView (Kindrgartener_Vaccination_Coverage.csv and a separate csv file for MMR and DTP/DTaP/DT vaccination coverage (MMR_P_Kindrgartener_Vaccination_Coverage.csv)
   - Maryalnd MMR Vaccination Coverage from the above csv (md_mmr_coverage.csv)
   - Maryland Confirmed Cases from the Maryland Department of Health (md_confirmed_cases.csv)
   - Maryland Measles Cases from Project Tycho (md_measles_project_tycho.csv)
