@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import plotly.express as px
+from pathlib import Path
 
 st.set_page_config(page_title="Placebo: Cancer Deaths & Vaccine Coverage", page_icon="✅")
 
@@ -17,8 +17,11 @@ st.write(
     """
 )
 
-vacc_coverage_df = pd.read_csv('../app/data/nis_vacc_coverage.csv')
-cancer_deaths_df = pd.read_csv('../app/data/cancer_deaths.csv')
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+
+vacc_coverage_df = pd.read_csv(DATA_DIR / "nis_vacc_coverage.csv")
+cancer_deaths_df = pd.read_csv(DATA_DIR / "cancer_deaths.csv")
 panel_df = pd.merge(cancer_deaths_df, vacc_coverage_df, on=['year', 'state'])
 
 
