@@ -34,13 +34,12 @@ pages = {
             icon="🇺🇸",
             url_path="mmp_coverage_cases_by_state.py"
         ),
-        st.Page(
-            "pages/time_lagged_associations_by_state.py",
-            title="Time Lagged Associations Per State",
-            icon="⏳",
-            url_path="time_lagged_associations_by_state.py"
-        ),
-        
+        # st.Page(
+        #     "pages/time_lagged_associations_by_state.py",
+        #     title="Time Lagged Associations Per State",
+        #     icon="⏳",
+        #     url_path="time_lagged_associations_by_state.py"
+        # ),
         st.Page(
             "pages/state_case_studies.py",
             title="State Case Studies",

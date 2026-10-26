@@ -17,8 +17,8 @@ st.write(
     """
 )
 
-vacc_coverage_df = pd.read_csv('app/data/nis_vacc_coverage.csv')
-cancer_deaths_df = pd.read_csv('app/data/cancer_deaths.csv')
+vacc_coverage_df = pd.read_csv('../app/data/nis_vacc_coverage.csv')
+cancer_deaths_df = pd.read_csv('../app/data/cancer_deaths.csv')
 panel_df = pd.merge(cancer_deaths_df, vacc_coverage_df, on=['year', 'state'])
 
 
