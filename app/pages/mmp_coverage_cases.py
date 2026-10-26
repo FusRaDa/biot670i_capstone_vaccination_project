@@ -40,19 +40,19 @@ st.write(
 # -------------------------
 
 cases_df = pd.read_csv(
-    "app/data/tycho_cases.csv"
+    "../app/data/tycho_cases.csv"
 )
 
 missing_cases_df = pd.read_csv(
-    "app/data/missing_cases.csv"
+    "../app/data/missing_cases.csv"
 )
 
 population_df = pd.read_csv(
-    "app/data/population.csv"
+    "../app/data/population.csv"
 )
 
 coverage_df = pd.read_csv(
-    "app/data/nis_vacc_coverage.csv"
+    "../app/data/nis_vacc_coverage.csv"
 )
 
 

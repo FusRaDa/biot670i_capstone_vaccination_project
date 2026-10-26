@@ -27,7 +27,7 @@ st.write(
     """
 )
 
-df = pd.read_csv('app/data/tycho_measles_control.csv')
+df = pd.read_csv('../app/data/tycho_measles_control.csv')
 def compare_control_measles_dates(df):
     columns = [
     "Period",

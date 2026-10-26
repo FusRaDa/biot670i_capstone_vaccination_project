@@ -15,13 +15,63 @@ st.set_page_config(
 )
 
 st.title("Pertussis Sanity Check")
+
+
 st.write(
     """
-    This page compares national pertussis incidence in young children with
-    state-level DTaP vaccination coverage summarized nationally. The analysis uses average state-level DTaP vaccination coverage.
+    ### Pertussis Vaccination Coverage and Incidence Analysis
 
-    Six scatterplots compare coverage with pertussis incidence at lags of
-    0 through 5 years.
+    This analysis examines the relationship between **DTaP vaccination coverage**
+    and **pertussis incidence among young children in the United States**
+    from **1995 through 2017**.
+
+    **Pertussis Incidence**
+
+    Pertussis incidence is analyzed for children **1–6 years of age**. Incidence is reported as the number of
+    cases per 100,000 children within this age group.
+
+    These age-specific incidence rates were obtained from
+    [CDC Pertussis Surveillance and Trends](https://www.cdc.gov/pertussis/php/surveillance/index.html),
+    which uses data from the **National Notifiable Diseases Surveillance
+    System (NNDSS)**. Because the data are already expressed as incidence
+    rates, no additional population normalization is performed.
+
+    **DTaP Vaccination Coverage**
+
+    State-level DTaP vaccination coverage for children aged **19–35 months**
+    was obtained from the
+    [CDC National Immunization Survey–Child (NIS-Child)](https://www.cdc.gov/childvaxview/).
+
+    Annual vaccination coverage is summarized using the **unweighted average**
+    of available state-level vaccination coverage percentages. Each state
+    contributes equally to the average.
+
+    **Time-Lagged Correlation Analysis**
+
+    To investigate whether vaccination coverage is associated with
+    pertussis incidence in the same or subsequent years, the analysis
+    evaluates time lags of **0 through 5 years**.
+
+    Six scatterplots compare vaccination coverage in year **t − lag**
+    with pertussis incidence in year **t**, for children aged 1–6 years.
+
+    Pearson correlation coefficients (r) and p-values are calculated
+    for each lag to evaluate the strength, direction,
+    and statistical significance of the observed associations.
+
+    **Interpretation and Limitations**
+
+    This is an ecological analysis using population-level vaccination
+    coverage and disease incidence data. The vaccination coverage
+    population (19–35 months) differs from the pertussis incidence
+    age group (1–6 years).
+
+    The unweighted state average is not equivalent to a nationally
+    population-weighted vaccination coverage estimate.
+
+    Correlation does not establish causation, and observed associations
+    may be influenced by other factors, including vaccination schedules,
+    waning immunity, disease outbreaks, and changes in surveillance.
     """
 )
 
@@ -60,7 +110,7 @@ def build_sanity_df(pertussis_df, ms_df):
         .rename(columns={"pertussis_coverage_pct": "max_pertussis_coverage_pct"})
     )
 
-    child_pertussis_cases_df = pertussis_df[["Year", "<1 yr", "1-6 yrs"]].copy()
+    child_pertussis_cases_df = pertussis_df[["Year", "1-6 yrs"]].copy()
     child_pertussis_cases_df = child_pertussis_cases_df.rename(columns={"Year": "year"})
 
     sanity_df = (
@@ -81,7 +131,6 @@ def graph_pertussis_age_coverage(df):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     colors = {
-        "<1 yr": "#E74C3C",
         "1-6 yrs": "#F39C12",
     }
 
@@ -144,7 +193,7 @@ def graph_pertussis_age_coverage(df):
     fig.update_xaxes(title_text="Year", dtick=1)
 
     fig.update_layout(
-        title="National Pertussis Incidence by Age Group & DTaP Coverage",
+        title="National Pertussis Incidence (Ages 1–6) & DTaP Coverage",
         barmode="group",
         height=550,
         hovermode="x unified",
@@ -156,7 +205,7 @@ def graph_pertussis_age_coverage(df):
 
 
 def pearson_pertussis_age(df, start_year=None, end_year=None, lag_years=0):
-    age_groups = ["<1 yr", "1-6 yrs"]
+    age_groups = ["1-6 yrs"]
 
     coverage_columns = {"avg_pertussis_coverage_pct": "Average"}
 
@@ -214,11 +263,11 @@ def graph_correlation(df, coverage_col, coverage_label, lag, start_year, end_yea
     coverage = df[["year", coverage_col]].copy()
     coverage["year"] += lag
     incidence = df[df["year"].between(start_year, end_year)]
-    paired = incidence[["year", "<1 yr", "1-6 yrs"]].merge(
+    paired = incidence[["year", "1-6 yrs"]].merge(
         coverage, on="year", how="left", validate="one_to_one"
     )
     fig = go.Figure()
-    for age, color in [("<1 yr", "#E74C3C"), ("1-6 yrs", "#F39C12")]:
+    for age, color in [("1-6 yrs", "#F39C12")]:
         valid = paired[["year", coverage_col, age]].dropna()
         x, y = valid[coverage_col].astype(float), valid[age].astype(float)
         fig.add_trace(go.Scatter(
@@ -278,7 +327,7 @@ st.subheader("Average DTaP Coverage vs Pertussis: 0–5 Year Lags")
 st.write(
     f"Six graphs compare average DTaP coverage in year **t − lag** with "
     f"pertussis incidence in year **t**, for incidence years "
-    f"**{start_year}–{end_year}**. Each chart shows both age groups."
+    f"**{start_year}–{end_year}**. Each chart shows incidence among children aged 1–6 years."
 )
 
 all_results = pd.concat(
@@ -303,20 +352,8 @@ for lag in range(6):
 
 st.subheader("Pearson Correlation Summary (All Lags)")
 
-age_groups = ["<1 yr", "1-6 yrs"]
-
-selected_ages = st.multiselect(
-    "Select Pertussis Age Groups",
-    options=age_groups,
-    default=age_groups
-)
-
-filtered_results = all_results[
-    all_results["age_group"].isin(selected_ages)
-]
-
 st.dataframe(
-    filtered_results.style.format(
+    all_results.style.format(
         {"pearson_r": "{:.3f}", "p_value": "{:.4f}"},
         na_rep="—",
     ),
@@ -326,5 +363,5 @@ st.dataframe(
 
 st.caption(
     "Pertussis incidence source: CDC pertussis surveillance. "
-    "Vaccination coverage is summarized from the project's state-level coverage dataset."
+    "Vaccination coverage is the unweighted mean of available state-level percentages."
 )
