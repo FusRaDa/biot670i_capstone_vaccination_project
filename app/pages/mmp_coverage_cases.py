@@ -2,6 +2,8 @@ import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import streamlit as st
+from pathlib import Path
+
 
 st.set_page_config(
     page_title="Measles, Mumps, Pertussis Incidence & Coverage",
@@ -38,22 +40,16 @@ st.write(
 # -------------------------
 # Load data
 # -------------------------
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
 
-cases_df = pd.read_csv(
-    "../app/data/tycho_cases.csv"
-)
+cases_df = pd.read_csv(DATA_DIR / "tycho_cases.csv")
 
-missing_cases_df = pd.read_csv(
-    "../app/data/missing_cases.csv"
-)
+missing_cases_df = pd.read_csv(DATA_DIR / "missing_cases.csv")
 
-population_df = pd.read_csv(
-    "../app/data/population.csv"
-)
+population_df = pd.read_csv(DATA_DIR / "population.csv")
 
-coverage_df = pd.read_csv(
-    "../app/data/nis_vacc_coverage.csv"
-)
+coverage_df = pd.read_csv(DATA_DIR / "nis_vacc_coverage.csv")
 
 
 # -------------------------
