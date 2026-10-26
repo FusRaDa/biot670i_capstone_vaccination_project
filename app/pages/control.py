@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
+from pathlib import Path
 
 st.set_page_config(page_title="Project Tycho Level 1 Control", page_icon="⚙️")
 
@@ -27,7 +28,9 @@ st.write(
     """
 )
 
-df = pd.read_csv('../app/data/tycho_measles_control.csv')
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+df = pd.read_csv(BASE_DIR / "data" / "tycho_measles_control.csv")
 def compare_control_measles_dates(df):
     columns = [
     "Period",
