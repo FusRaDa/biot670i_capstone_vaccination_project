@@ -1,7 +1,7 @@
-"""BIOT 670I — descriptive MMP master-data explorer for California and Florida.
+"""BIOT 670I Group 1 | Descriptive MMP master data explorer.
 
-Save this as app/pages/mmp_master_explorer.py and register it in app/app.py.
-This page does not compute or present lag correlations.
+This page describes measles, mumps, and pertussis vaccination coverage and
+incidence across California and Florida. It does not calculate lag correlations.
 """
 from pathlib import Path
 
@@ -9,143 +9,203 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-DATA = Path(__file__).resolve().parent.parent / 'data' / 'cases_coverage_ms.csv'
-STATE_CODES = {'California': 'CA', 'Florida': 'FL'}
-DISEASES = {'Measles': 'measles', 'Mumps': 'mumps', 'Pertussis': 'pertussis'}
-COLOR = {'California': '#71BCF4', 'Florida': '#30BDA5'}
+DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "cases_coverage_ms.csv"
+STATE_CODES = {"California": "CA", "Florida": "FL"}
+DISEASES = {"Measles": "measles", "Mumps": "mumps", "Pertussis": "pertussis"}
+COLORS = {"California": "#71BCF4", "Florida": "#30BDA5"}
+
 
 @st.cache_data
 def load_master():
-    df = pd.read_csv(DATA)
-    required = {'year', 'state'} | {
-        f'{d}_{field}' for d in DISEASES.values()
-        for field in ('coverage_pct', 'cases_per_100k', 'cases')
+    df = pd.read_csv(DATA_PATH)
+    required = {"year", "state"} | {
+        f"{disease}_{field}"
+        for disease in DISEASES.values()
+        for field in ("coverage_pct", "cases_per_100k", "cases")
     }
-    missing = required.difference(df.columns)
+    missing = required - set(df.columns)
     if missing:
-        raise ValueError(f'Missing master-data columns: {sorted(missing)}')
-    df['year'] = pd.to_numeric(df['year'], errors='coerce')
-    for column in required - {'state', 'year'}:
-        df[column] = pd.to_numeric(df[column], errors='coerce')
-    df = df[df['state'].isin(STATE_CODES.values())].dropna(subset=['year']).copy()
-    df['year'] = df['year'].astype(int)
-    if df.duplicated(['state', 'year']).any():
-        raise ValueError('Master file contains duplicate state-year records.')
-    return df
+        raise ValueError(f"Missing columns from master dataset: {sorted(missing)}")
+
+    df = df.copy()
+    df["year"] = pd.to_numeric(df["year"], errors="coerce")
+    if df["year"].isna().any():
+        raise ValueError("Master dataset contains missing or invalid years.")
+    if (df["year"] % 1 != 0).any():
+        raise ValueError("Master dataset contains non-integer years.")
+    df["year"] = df["year"].astype(int)
+    for column in required - {"year", "state"}:
+        df[column] = pd.to_numeric(df[column], errors="coerce")
+
+    df = df[df["state"].isin(STATE_CODES.values())].copy()
+    if df.empty:
+        raise ValueError("No California or Florida records found.")
+    if df.duplicated(["state", "year"]).any():
+        raise ValueError("Duplicate state/year records in master dataset.")
+    return df.sort_values(["state", "year"])
 
 
-def plot_trend(frame, column, ylabel, chart_type='line'):
+def trend_chart(frame, column, ylabel, selected_states):
     fig = go.Figure()
-    for name in STATE_CODES:
-        state_df = frame[frame['state'] == STATE_CODES[name]].sort_values('year')
-        if chart_type == 'bar':
-            fig.add_trace(go.Bar(
-                x=state_df['year'], y=state_df[column], name=name,
-                marker_color=COLOR[name], opacity=.80,
-                hovertemplate='Year: %{x}<br>Value: %{y:.3f}<extra></extra>'
-            ))
+    first_year = int(frame["year"].min())
+    last_year = int(frame["year"].max())
+    full_years = pd.DataFrame({"year": range(first_year, last_year + 1)})
+
+    for state_name in selected_states:
+        state_code = STATE_CODES[state_name]
+        state_data = frame.loc[frame["state"] == state_code, ["year", column]]
+        series = full_years.merge(state_data, on="year", how="left")
+        fig.add_trace(go.Scatter(
+            x=series["year"],
+            y=series[column],
+            mode="lines+markers",
+            connectgaps=False,
+            name=state_name,
+            line={"color": COLORS[state_name], "width": 2},
+            marker={"size": 7},
+            hovertemplate="Year: %{x}<br>Value: %{y:.3f}<extra>%{fullData.name}</extra>",
+        ))
+
+    # Use a tight, data-driven scale for coverage so annual differences are visible.
+    # Preserve a zero-based scale for incidence counts/rates.
+    if column.endswith("_coverage_pct"):
+        observed = pd.to_numeric(frame[column], errors="coerce").dropna()
+        if not observed.empty:
+            low, high = float(observed.min()), float(observed.max())
+            padding = max((high - low) * 0.15, 0.5)
+            yaxis_range = [max(0.0, low - padding), min(100.0, high + padding)]
+            if yaxis_range[0] >= yaxis_range[1]:
+                yaxis_range = [max(0.0, low - 0.5), min(100.0, high + 0.5)]
         else:
-            # Include NaN entries on a full-year grid so gaps break the line.
-            years = pd.DataFrame({'year': range(int(frame.year.min()), int(frame.year.max()) + 1)})
-            series = years.merge(state_df[['year', column]], on='year', how='left')
-            fig.add_trace(go.Scatter(
-                x=series['year'], y=series[column], mode='lines+markers',
-                connectgaps=False, name=name, line={'color': COLOR[name], 'width': 2},
-                marker={'size': 6},
-                hovertemplate='Year: %{x}<br>Value: %{y:.3f}<extra></extra>'
-            ))
-    
+            yaxis_range = None
+    else:
+        yaxis_range = None
+
     fig.update_layout(
         template="plotly_dark",
-        title_text="",
-        showlegend=False,
-        height=410,
+        title_text="",  # Avoids the unwanted 'undefined' heading
+        showlegend=len(selected_states) > 1,
+        legend={"orientation": "h", "y": 1.06, "x": 0},
+        height=440,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=50, r=20, t=20, b=100),
-        xaxis=dict(
-            title_text="Year",
-            type="linear",
-            tickmode="linear",
-            tick0=1995,
-            dtick=1,
-            tickangle=60,
-            range=[
-                frame["year"].min() - 0.5,
-                frame["year"].max() + 0.5
-            ]
-        ),
-        yaxis=dict(
-            title_text=ylabel
-        ),
-        barmode="group"
+        margin={"l": 55, "r": 25, "t": 35, "b": 105},
+        hovermode="closest",
+        xaxis={
+            "title_text": "Year",
+            "type": "linear",
+            "tickmode": "linear",
+            "tick0": first_year,
+            "dtick": 1,
+            "tickangle": 60,
+            "tickfont": {"size": 10},
+            "range": [first_year - 0.5, last_year + 0.5],
+        },
+        yaxis={
+            "title_text": ylabel,
+            "showgrid": True,
+            "gridcolor": "rgba(150,150,150,0.20)",
+            "range": yaxis_range,
+            "rangemode": "tozero" if yaxis_range is None else "normal",
+        },
     )
-
-    fig.update_traces(showlegend=False)
-
     return fig
 
-st.title('MMP Explorer — Master Dataset (UPDATED)')
-st.caption('BIOT 670I · Descriptive state-level analysis · 1995–2017')
-st.write('Explore measles, mumps, and pertussis in California and Florida. '
-         'This page describes reported observations; it does not calculate lagged associations.')
+
+st.title("MMP Master Explorer")
+st.caption("BIOT 670I Capstone | Group 1 | Descriptive state-level analysis, 1995–2017")
+st.write(
+    "Explore measles, mumps, and pertussis vaccination coverage and disease "
+    "incidence in California and Florida. This page presents descriptive data "
+    "and does not calculate time-lagged correlations."
+)
 
 try:
     master = load_master()
-except (OSError, ValueError, pd.errors.ParserError) as error:
-    st.error('Unable to load the master CSV from app/data/cases_coverage_ms.csv.')
-    st.exception(error)
+except (OSError, ValueError, pd.errors.ParserError) as exc:
+    st.error("Unable to load the master dataset at app/data/cases_coverage_ms.csv.")
+    st.exception(exc)
     st.stop()
 
-chosen = st.selectbox('Select disease', list(DISEASES), key='mmp_disease')
-d = DISEASES[chosen]
-coverage_col = f'{d}_coverage_pct'
-incidence_col = f'{d}_cases_per_100k'
-cases_col = f'{d}_cases'
-selected_states = st.multiselect('Select states', list(STATE_CODES), default=list(STATE_CODES), key='mmp_states')
-if not selected_states:
-    st.info('Select at least one state to display data.')
-    st.stop()
-frame = master[master['state'].isin([STATE_CODES[s] for s in selected_states])].copy()
-# Keep the ordering of the original dataset but do not impute missing outcomes.
-years = sorted(frame.year.unique().tolist())
-valid = frame[frame[coverage_col].notna() & frame[incidence_col].notna()]
-c1, c2, c3 = st.columns(3)
-c1.metric('State-year rows', f'{len(frame)}')
-c2.metric('Complete measurement pairs', f'{len(valid)}')
-c3.metric('Incomplete measurement pairs', f'{len(frame)-len(valid)}')
-
-# Explicit labels avoid the Plotly 'undefined' legend-title issue.
-state_key = '   |   '.join(
-    f':blue[**California**]' if state == 'California' else f':green[**Florida**]'
-    for state in selected_states
+chosen_disease = st.selectbox("Select disease", list(DISEASES), key="mmp_disease")
+selected_states = st.multiselect(
+    "Select states", list(STATE_CODES), default=list(STATE_CODES), key="mmp_states"
 )
-st.caption(f'States shown: {state_key}')
+if not selected_states:
+    st.info("Select at least one state to display data.")
+    st.stop()
 
-st.subheader(f'{chosen} Vaccination Coverage')
-st.plotly_chart(plot_trend(frame, coverage_col, 'Vaccination Coverage (%)'), use_container_width=True, key='mmp_coverage_chart')
-st.subheader(f'{chosen} Incidence')
-st.plotly_chart(plot_trend(frame, incidence_col, 'Cases per 100,000'), use_container_width=True, key='mmp_incidence_chart')
+disease = DISEASES[chosen_disease]
+coverage_col = f"{disease}_coverage_pct"
+incidence_col = f"{disease}_cases_per_100k"
+cases_col = f"{disease}_cases"
+frame = master[master["state"].isin(STATE_CODES[name] for name in selected_states)].copy()
+complete = frame[coverage_col].notna() & frame[incidence_col].notna()
 
-st.subheader('Data Completeness by State')
-rows = []
+col1, col2, col3 = st.columns(3)
+col1.metric("State-year records", len(frame))
+col2.metric("Complete measurement pairs", int(complete.sum()))
+col3.metric("Incomplete measurement pairs", int((~complete).sum()))
+st.caption(
+    "Complete pairs contain both vaccination coverage and incidence for a "
+    "state and calendar year; missing values are not interpreted as zero."
+)
+
+st.subheader(f"{chosen_disease} Vaccination Coverage")
+st.plotly_chart(
+    trend_chart(frame, coverage_col, "Vaccination Coverage (%)", selected_states),
+    use_container_width=True,
+    key="mmp_coverage_chart",
+)
+
+st.subheader(f"{chosen_disease} Incidence")
+st.plotly_chart(
+    trend_chart(frame, incidence_col, "Cases per 100,000", selected_states),
+    use_container_width=True,
+    key="mmp_incidence_chart",
+)
+
+st.subheader("Data Completeness by State")
+summary_rows = []
 for name in selected_states:
-    s = frame[frame['state'] == STATE_CODES[name]].sort_values('year')
-    missing_years = s.loc[s[coverage_col].isna() | s[incidence_col].isna(), 'year'].tolist()
-    rows.append({'State': name, 'Years in master': len(s),
-                 'Coverage available': int(s[coverage_col].notna().sum()),
-                 'Incidence available': int(s[incidence_col].notna().sum()),
-                 'Both available': int((s[coverage_col].notna() & s[incidence_col].notna()).sum()),
-                 'Missing either (years)': ', '.join(map(str, missing_years)) or 'None'})
-st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-with st.expander('View underlying observations'):
-    st.dataframe(frame[['year', 'state', coverage_col, incidence_col, cases_col]].sort_values(['state','year']),
-                 use_container_width=True, hide_index=True)
-with st.expander('Methods and interpretation', expanded=True):
-    st.markdown('''
-- **Ecological scope:** State-level relationships do not establish individual vaccine effects.
-- **Different populations:** NIS-Child coverage estimates and state surveillance incidence may represent different age groups.
-- **Missing observations:** Blank incidence values remain missing, not zero. Lines break at missing years.
-- **Descriptive analysis:** This page makes no causal or time-lagged claims. For reported measles lag coefficients, use the existing State Case Studies page.
-- **Data provenance:** The master CSV combines Project Tycho, supplemental disease reporting, NIS-Child coverage, and population information; consult the team methodology for exact transformations and survey weighting.
-''')
+    state_rows = frame.loc[frame["state"] == STATE_CODES[name]].sort_values("year")
+    valid_pairs = state_rows[coverage_col].notna() & state_rows[incidence_col].notna()
+    incomplete_years = state_rows.loc[~valid_pairs, "year"].tolist()
+    summary_rows.append({
+        "State": name,
+        "Years represented": len(state_rows),
+        "Coverage available": int(state_rows[coverage_col].notna().sum()),
+        "Incidence available": int(state_rows[incidence_col].notna().sum()),
+        "Complete pairs": int(valid_pairs.sum()),
+        "Completeness (%)": round(100 * valid_pairs.mean(), 1) if len(state_rows) else 0.0,
+        "Incomplete years": ", ".join(map(str, incomplete_years)) or "None",
+    })
+st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+
+with st.expander("View underlying observations"):
+    st.dataframe(
+        frame[["year", "state", coverage_col, incidence_col, cases_col]].sort_values(["state", "year"]),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+with st.expander("Methods and interpretation", expanded=True):
+    st.markdown("""
+- **Ecological scope:** State-level relationships do not establish individual-level vaccine effects.
+- **Different populations:** NIS-Child coverage estimates and state surveillance incidence may cover different age groups.
+- **Missing observations:** Unavailable incidence remains missing, not zero; the charts do not bridge missing years.
+- **Descriptive purpose:** This explorer does not compute causal or lagged associations. See **State Case Studies** for the reported measles lag results.
+- **Data provenance:** The master CSV integrates surveillance, vaccination coverage, and population data. See the team's methodology for exact source transformations and weighting.
+- **Comparisons:** Similar patterns across the plotted series are not proof of causation and may reflect confounding and surveillance differences.
+""")
+
+st.caption(
+    "BIOT 670I Capstone | Group 1 | Exploratory Ecological Analysis"
+)
+
+st.caption(
+    "AI-assisted code generation was used to support data processing "
+    "and visualization, but all interpretations and conclusions "
+    "were made by the research team."
+)
+
