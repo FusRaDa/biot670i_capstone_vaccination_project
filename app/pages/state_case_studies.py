@@ -19,17 +19,14 @@ import streamlit as st
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
+# Both states use the same consolidated source and validated lag method.
+# Original restricted analyses remain in the repository for provenance.
+MASTER_FILE = "cases_coverage_ms.csv"
+UPDATED_LAG_FILE = "ca_fl_updated_measles_lag_results.csv"
+
 STATE_CONFIG = {
-    "California": {
-        "code": "CA",
-        "analysis_file": "california_measles_analysis.csv",
-        "lag_file": "california_measles_lag_results.csv",
-    },
-    "Florida": {
-        "code": "FL",
-        "analysis_file": "florida_measles_analysis.csv",
-        "lag_file": "florida_measles_lag_results.csv",
-    },
+    "California": {"code": "CA"},
+    "Florida": {"code": "FL"},
 }
 
 COLORS = {
@@ -45,56 +42,51 @@ COLORS = {
 # ------------------------------------------------------------
 
 @st.cache_data
-def load_state_data(analysis_file, lag_file):
-
-    analysis = pd.read_csv(DATA_DIR / analysis_file)
-    lag_results = pd.read_csv(DATA_DIR / lag_file)
+def load_state_data(state_code):
+    """Read the master state-year table and team-validated lag output."""
+    analysis = pd.read_csv(DATA_DIR / MASTER_FILE)
+    lag_results = pd.read_csv(DATA_DIR / UPDATED_LAG_FILE)
 
     required_analysis = [
-        "year",
-        "measles_coverage_pct",
-        "measles_cases_per_100k",
+        "state", "year", "measles_coverage_pct", "measles_cases_per_100k"
     ]
-
-    required_lag = [
-        "lag_years",
-        "pearson_r",
-        "p_value",
-        "n",
-    ]
+    required_lag = ["state", "lag_years", "pearson_r", "p_value", "n"]
 
     for name, df, required in [
-        ("Analysis", analysis, required_analysis),
-        ("Lag analysis", lag_results, required_lag),
+        ("Master dataset", analysis, required_analysis),
+        ("Updated lag results", lag_results, required_lag),
     ]:
-        missing = set(required) - set(df.columns)
-
+        missing = sorted(set(required) - set(df.columns))
         if missing:
-            raise ValueError(
-                f"{name} file is missing columns: {sorted(missing)}"
-            )
+            raise ValueError(f"{name} is missing columns: {missing}")
 
-    analysis = analysis.copy()
-    lag_results = lag_results.copy()
+    analysis = analysis.loc[
+        analysis["state"].astype(str).str.strip().str.upper() == state_code
+    ].copy()
+    lag_results = lag_results.loc[
+        lag_results["state"].astype(str).str.strip().str.upper() == state_code
+    ].copy()
 
-    for column in required_analysis:
-        analysis[column] = pd.to_numeric(
-            analysis[column],
-            errors="coerce",
-        )
+    for column in ["year", "measles_coverage_pct", "measles_cases_per_100k"]:
+        analysis[column] = pd.to_numeric(analysis[column], errors="coerce")
+    for column in ["lag_years", "pearson_r", "p_value", "n"]:
+        lag_results[column] = pd.to_numeric(lag_results[column], errors="coerce")
 
-    for column in required_lag:
-        lag_results[column] = pd.to_numeric(
-            lag_results[column],
-            errors="coerce",
-        )
+    if analysis.empty or lag_results.empty:
+        raise ValueError(f"No master data or lag results found for {state_code}")
+    if analysis["year"].isna().any():
+        raise ValueError(f"Invalid year value in master data for {state_code}")
+    if analysis["year"].duplicated().any():
+        raise ValueError(f"Duplicate state-year observations for {state_code}")
+    if lag_results["lag_years"].isna().any() or lag_results["lag_years"].duplicated().any():
+        raise ValueError(f"Invalid or duplicate lag periods for {state_code}")
+    if lag_results[["pearson_r", "p_value", "n"]].isna().any().any():
+        raise ValueError(f"Missing statistical result for {state_code}")
 
-    analysis = analysis.sort_values("year")
-    lag_results = lag_results.dropna(
-        subset=required_lag
-    ).sort_values("lag_years")
-
-    return analysis, lag_results
+    return (
+        analysis.sort_values("year").reset_index(drop=True),
+        lag_results.sort_values("lag_years").reset_index(drop=True),
+    )
 
 
 # ------------------------------------------------------------
@@ -116,7 +108,7 @@ def format_year_chart(fig, y_title, first_year, last_year):
 
     # Remove Plotly titles entirely.
     # Streamlit provides the chart headings.
-    fig.layout.title = None
+    fig.update_layout(title_text="")
 
     fig.update_xaxes(
         title_text="Year",
@@ -193,10 +185,7 @@ selected_state = st.selectbox(
 config = STATE_CONFIG[selected_state]
 
 try:
-    analysis_df, lag_df = load_state_data(
-        config["analysis_file"],
-        config["lag_file"],
-    )
+    analysis_df, lag_df = load_state_data(config["code"])
 
 except (FileNotFoundError, ValueError, pd.errors.EmptyDataError) as error:
     st.error(
@@ -206,17 +195,7 @@ except (FileNotFoundError, ValueError, pd.errors.EmptyDataError) as error:
     st.exception(error)
     st.stop()
 
-# Check state identifiers when present
-if "state" in analysis_df.columns:
-    analysis_df = analysis_df[
-        analysis_df["state"] == config["code"]
-    ].copy()
-
-if "state" in lag_df.columns:
-    lag_df = lag_df[
-        lag_df["state"] == config["code"]
-    ].copy()
-
+# State filtering and uniqueness validation occur during data loading.
 valid_trends = analysis_df.dropna(
     subset=[
         "year",
@@ -250,9 +229,9 @@ last_year = int(analysis_df["year"].max())
 st.header(f"{selected_state}: Measles Analysis")
 
 st.info(
-    "Charts and statistics use the selected state's "
-    "measles analysis files. Missing observations "
-    "are not interpolated."
+    "Historical charts use the 1995–2017 consolidated master dataset; "
+    "lag statistics use the group's updated California/Florida analysis. "
+    "Missing observations are not interpolated."
 )
 
 st.subheader("Dataset Overview")
@@ -298,8 +277,9 @@ if selected_state == "California":
         requirements provide policy context for examining
         measles trends.
 
-        Requirements introduced around 1999 affected
-        students entering seventh grade.
+        State school-entry requirements, including historical
+        requirements for older students, provide context rather
+        than a causal explanation for these trends.
 
         **Population limitation:** NIS-Child estimates
         represent younger children than those directly
@@ -337,8 +317,9 @@ st.divider()
 st.subheader("Vaccination Coverage and Disease Incidence")
 
 st.caption(
-    "Only observed years are plotted. Lines break across "
-    "missing years; missing incidence is not treated as zero."
+    "Observed annual coverage and incidence are displayed separately. "
+    "Coverage can be present in years with missing incidence; "
+    "missing incidence is not treated as zero."
 )
 
 # Coverage may be available where incidence is missing.
@@ -601,7 +582,7 @@ correlation_fig.update_layout(
     ),
 )
 
-correlation_fig.layout.title = None
+correlation_fig.update_layout(title_text="")
 
 correlation_fig.add_hline(
     y=0,
@@ -616,9 +597,9 @@ st.plotly_chart(
 )
 
 st.caption(
-    "Lag coefficients are loaded from the group's "
-    "state-specific analysis files. They have not "
-    "been recalculated by this dashboard."
+    "Lag coefficients are loaded from the group's updated "
+    "CA/FL lag-results CSV. This page independently checks pair counts "
+    "but does not recalculate Pearson r or p-values."
 )
 
 
@@ -663,8 +644,9 @@ with q3:
     st.metric("Year Coverage", f"{completeness:.1f}%")
 
 st.caption(
-    "A complete year has both vaccination coverage "
-    "and measles incidence available."
+    "A complete year has both vaccination coverage and measles "
+    "incidence available in the master dataset. This is distinct from "
+    "the coverage-to-incidence pair counts for nonzero lags."
 )
 
 with st.expander("View Incomplete Years"):
@@ -682,7 +664,11 @@ with st.expander("View Incomplete Years"):
 # 13. CALENDAR-YEAR LAG PAIR VALIDATION
 # ------------------------------------------------------------
 
-available_years = set(observed_years)
+# Match the notebook's method: coverage at year t and incidence at
+# year t + lag. The starting year does NOT need complete incidence,
+# and the target year does NOT need complete coverage.
+coverage_years = set(coverage_df["year"].tolist())
+incidence_years = set(incidence_df["year"].tolist())
 
 lag_rows = []
 
@@ -690,8 +676,8 @@ for lag in lag_options:
 
     valid_pairs = [
         (year, year + lag)
-        for year in observed_years
-        if year + lag in available_years
+        for year in sorted(coverage_years)
+        if year + lag in incidence_years
     ]
 
     lag_rows.append({
@@ -725,7 +711,12 @@ comparison_df["Counts Match"] = (
     == comparison_df["Reported Pairs"]
 )
 
-st.markdown("#### Available Observations by Lag")
+st.markdown("#### Available Coverage–Incidence Pairs by Lag")
+
+st.caption(
+    "Each pair uses coverage in starting year t and measles incidence "
+    "in year t + lag; years missing either required value are excluded."
+)
 
 quality_fig = go.Figure()
 
@@ -760,7 +751,7 @@ quality_fig.update_layout(
     ),
 )
 
-quality_fig.layout.title = None
+quality_fig.update_layout(title_text="")
 
 st.plotly_chart(
     quality_fig,
@@ -771,16 +762,15 @@ st.plotly_chart(
 if comparison_df["Counts Match"].all():
 
     st.success(
-        "Reported lag sample sizes match the "
-        "available calendar-year observation counts."
+        "Reported lag sample sizes match the available coverage-to-"
+        "incidence year pairs for each calendar-year offset."
     )
 
 else:
 
     st.warning(
-        "Some reported lag sample sizes differ from "
-        "the calendar-year availability counts. "
-        "This requires additional review."
+        "Some reported lag sample sizes differ from the independently "
+        "counted calendar-year pairs. Check the upstream lag analysis."
     )
 
 with st.expander("View Lag Pair Details"):
@@ -885,6 +875,13 @@ with st.expander("Study Limitations", expanded=True):
     )
 
 st.caption(
-    "BIOT 670I Capstone | Group 1 | "
-    "Exploratory Ecological Analysis"
+    "BIOT 670I Capstone | Group 1 | Exploratory Ecological Analysis"
 )
+
+st.caption(
+    "AI-assisted code generation was used to support data processing "
+    "and visualization, but all interpretations and conclusions "
+    "were made by the research team."
+)
+
+
