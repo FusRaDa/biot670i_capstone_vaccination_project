@@ -20,29 +20,22 @@ st.sidebar.header(
 
 st.write(
     """
-    ### Suggested States for Analysis
+    ### Analysis of State MMP Coverage and Case Data
 
-    **California** is useful for examining major pertussis epidemics in 2010
-    and 2014 alongside vaccination coverage and subsequent policy changes.
+    Using the datasets, annual **measles, mumps, and pertussis cases per 100,000 individuals** and their corresponding vaccination coverage from **1994 to 2018** can be explored by state.
 
-    **Minnesota** experienced a major measles outbreak in 2017 associated with
-    reduced MMR vaccination in a localized community.
+    Using ChatGPT, the following states were suggested for further analysis:
 
-    **Ohio** experienced a large measles outbreak in an underimmunized Amish
-    community in 2014.
+    - **California:** Useful for examining major pertussis epidemics in **2010 and 2014**, alongside vaccination coverage and subsequent policy changes.
+    - **Minnesota:** Experienced a major measles outbreak in **2017** associated with reduced MMR vaccination in a localized community.
+    - **Ohio:** Experienced a large measles outbreak in an underimmunized Amish community in **2014**.
+    - **Washington:** Experienced a major pertussis epidemic in **2012**, making it useful for examining changes in disease incidence alongside vaccination coverage.
+    - **New York:** Experienced a large mumps outbreak beginning in **2009**, particularly within close-knit communities.
+    - **Arkansas:** Experienced a large mumps outbreak during **2016–2017**.
 
-    **Washington** experienced a major pertussis epidemic in 2012, making it
-    useful for examining changes in disease incidence alongside vaccination
-    coverage.
+    *(OpenAI, 2026)*
 
-    **New York** experienced a large mumps outbreak beginning in 2009,
-    particularly within close-knit communities.
-
-    **Arkansas** experienced a large mumps outbreak during 2016–2017.
-
-    Disease incidence is shown as **cases per 100,000 population** rather than
-    raw case counts. This adjusts for differences in state population and makes
-    incidence more comparable across states and years.
+    Based on these suggestions, **California and Florida** were selected for further analysis in the **State Case Studies** tab.
     """
 )
 
