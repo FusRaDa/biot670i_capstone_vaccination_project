@@ -76,10 +76,10 @@ pages = {
             url_path="mmp-master-explorer"
         ),
         st.Page(
-            "pages/references.py",
-            title="Gloria Bukirwa - TBD",
+            "pages/california_sb277.py",
+            title="Gloria Bukirwa - California SB 277",
             icon=":material/person_search:",
-            url_path="references"
+            url_path="california_sb277",
         ),
         st.Page(
             "pages/references.py",
