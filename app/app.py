@@ -46,24 +46,6 @@ pages = {
         #     url_path="time_lagged_associations_by_state.py"
         # ),
         st.Page(
-            "pages/state_case_studies.py",
-            title="State Case Studies",
-            icon=":material/analytics:",
-            url_path="state-case-studies"
-        ),
-        st.Page(
-            "pages/references.py",
-            title="References",
-            icon=":material/menu_book:",
-            url_path="references"
-        ),
-        st.Page(
-            "pages/mmp_master_explorer.py",
-            title="MMP Master Explorer",
-            icon=":material/analytics:",
-            url_path="mmp-master-explorer"
-        ),
-        st.Page(
             "pages/pertussis_sanity_check.py",
             title="Matthew Rada - Pertussis Sanity Check",
             icon=":material/person_search:",
@@ -80,6 +62,30 @@ pages = {
             title="Heba Bakry - Maryland Case Study",
             icon=":material/person_search:",
             url_path="maryland_case_study",
+        ),
+        st.Page(
+            "pages/state_case_studies.py",
+            title="Moira Overly - State Case Studies",
+            icon=":material/person_search:",
+            url_path="state-case-studies"
+        ),
+        st.Page(
+            "pages/mmp_master_explorer.py",
+            title="Moira Overly - MMP Master Explorer",
+            icon=":material/person_search:",
+            url_path="mmp-master-explorer"
+        ),
+        st.Page(
+            "pages/references.py",
+            title="Gloria Bukirwa - TBD",
+            icon=":material/person_search:",
+            url_path="references"
+        ),
+        st.Page(
+            "pages/references.py",
+            title="References",
+            icon=":material/menu_book:",
+            url_path="#"
         ),
 
     ],
