@@ -1,5 +1,10 @@
 import streamlit as st
 
+st.set_page_config(
+    page_title="BIOT 670I Capstone",
+    layout="wide",
+)
+
 pages = {
     "Home": [
         st.Page(
@@ -69,6 +74,12 @@ pages = {
             title="Kalkidan Perin - FL & CA Lag Phase Analysis",
             icon=":material/person_search:",
             url_path="ca_fl_measles_lag_analysis"
+        ),
+        st.Page(
+            "pages/maryland_case_study.py",
+            title="Heba Bakry - Maryland Case Study",
+            icon=":material/person_search:",
+            url_path="maryland_case_study",
         ),
 
     ],
