@@ -15,24 +15,23 @@ st.sidebar.header("Measles, Mumps, Pertussis Incidence & Coverage")
 
 st.write(
     """
-    ### Vaccine Coverage & Disease Incidence - Pooled Analysis
+    ### Analysis of Vaccine Coverage & Incidence Rates
 
-    Case Coverage Details
-    - **Measles:** Project Tycho is used as the primary source for state-level measles case counts. Missing case data for **2003–2015** were supplemented using annual CDC MMWR/NNDSS surveillance reports.
-    - **Mumps:** Project Tycho is used as the primary source for state-level mumps case counts. Missing case data for **2003–2010** were supplemented using annual CDC MMWR/NNDSS surveillance reports.
-    - **Pertussis:** All state-level pertussis case counts are from **Project Tycho**. No additional MMWR/NNDSS case data were added for pertussis.
-    
-    When both Project Tycho and the supplemental MMWR/NNDSS dataset contain a value for the same state and year, the **Project Tycho value is retained**. MMWR/NNDSS values are used only to fill missing observations.
+    Project Tycho was utilized as the main data source for **measles, mumps, and pertussis incidence rates**. The CDC MMWR/NNDSS reports were used to cover missing data from **2003–2015 for measles** and **2003–2010 for mumps**, with Project Tycho data points preferred over the additional dataset.
 
-    Disease incidence is reported as **cases per 100,000 population**, allowing
-    disease occurrence to be compared across years while accounting for changes
-    in population size.
+    The figures showcase vaccination coverage and **cases per 100,000 individuals** for each disease over time from **1994 to 2018**, with measles, mumps, and pertussis data missing for **1994 and 2018**.
 
-    Overall, the figure does not demonstrate a simple year-to-year relationship
-    between national vaccination coverage and disease incidence. National estimates
-    can conceal state-level differences, localized coverage gaps, and outbreaks.
-    Therefore, this visualization is descriptive and should not be interpreted
-    as evidence of a causal relationship.
+    #### Measles
+
+    In **2014**, the highest measles incidence rate occurred during the time period, with **0.21 cases per 100,000 individuals** and a vaccination coverage of **92.28%**. In the following year, vaccination coverage rose to **93.21%**, while measles incidence fell to **0.06 cases per 100,000**.
+
+    #### Mumps
+
+    The highest mumps incidence rate occurred in **2017**, with **1.66 cases per 100,000 individuals** and a vaccination coverage of **91.61%**. The highest vaccination coverage from **1995 to 2017** occurred in **2004**, at **92.90%**.
+
+    #### Pertussis
+
+    The highest pertussis incidence rate occurred in **2012**, with **12.3 cases per 100,000 individuals** and a corresponding vaccination coverage of **83.50%**. This incidence rate was higher than those for mumps and measles combined. However, pertussis vaccination coverage remained **below 86%** throughout the time period covered in the figure.
     """
 )
 
