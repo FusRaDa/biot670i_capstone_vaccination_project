@@ -11,9 +11,14 @@ st.write(
     """
     ### Cancer Deaths & Vaccine Coverage
 
-    This placebo check tests whether vaccination coverage is associated with an unrelated outcome: cancer deaths. 
-    Since vaccination coverage is not expected to affect overall cancer mortality, we should not observe a consistent relationship between the two. 
+    Cancer mortality data were obtained from the **CDC WONDER Underlying Cause of Death database**, while vaccination coverage data were obtained from the **CDC National Immunization Survey (NIS-Child)**.
+
+    This placebo check tests whether vaccination coverage is associated with an unrelated outcome: cancer deaths.
+    Since childhood vaccination coverage is not expected to directly affect overall cancer mortality, we should not observe a consistent relationship between the two.
+
     A lack of association provides support that relationships observed for vaccine-preventable diseases are not simply due to general state or year trends.
+
+    **Data Source:** [CDC WONDER – Underlying Cause of Death](https://wonder.cdc.gov/ucd-icd10.html)
     """
 )
 
