@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+from scipy.stats import pearsonr
 from pathlib import Path
 
 st.set_page_config(page_title="Placebo: Cancer Deaths & Vaccine Coverage", page_icon="✅")
@@ -141,3 +142,50 @@ filtered_df = panel_df[panel_df["state"] == selected_state]
 
 fig = graph_cancer_vaccination_coverage(filtered_df, selected_state)
 st.plotly_chart(fig, width="stretch")
+
+st.subheader("Correlation Stats")
+
+correlation_results = []
+
+coverage_columns = {
+    "Measles": "measles_coverage_pct",
+    "Mumps": "mumps_coverage_pct",
+    "Pertussis": "pertussis_coverage_pct",
+}
+
+for disease, coverage_col in coverage_columns.items():
+
+    # Keep only years where both values are available
+    corr_df = filtered_df[
+        ["cancer_death_count", coverage_col]
+    ].dropna()
+
+    if len(corr_df) >= 3:
+        r, p = pearsonr(
+            corr_df["cancer_death_count"],
+            corr_df[coverage_col]
+        )
+    else:
+        r, p = float("nan"), float("nan")
+
+    correlation_results.append({
+        "disease": disease,
+        "n": len(corr_df),
+        "pearson_r": r,
+        "p_value": p,
+        "significant_0_05": p < 0.05 if pd.notna(p) else False,
+    })
+
+correlation_df = pd.DataFrame(correlation_results)
+
+st.dataframe(
+    correlation_df.style.format(
+        {
+            "pearson_r": "{:.3f}",
+            "p_value": "{:.4f}",
+        },
+        na_rep="—",
+    ),
+    width="stretch",
+    hide_index=True,
+)
